@@ -24,6 +24,23 @@ log() {
 	printf "%($log_timestamp)T - %-5s - %s\n" "-1" "${this_loglevel^^}" "${*}" >> "${log_file}"
 } # end of function log
 
+#-------------------------------------------------------------------------------
+#  Example usage
+#-------------------------------------------------------------------------------
+#
+# source logging.sh
+#
+# log debug "low level message"
+# log error "important message"
+#
+# # default settings that can be changed:
+# log_level=debug
+# log_file=/var/log/something.log
+# log_timestamp='%d %b %Y %H:%M:%S %z'
+#
+# # to send the logs to stderr you can set log_file to /proc/self/fd/2
+#
+
 logrotate() {
 	local action=${1:-check}
 	local logsize=
@@ -51,19 +68,13 @@ logrotate() {
 	cat /dev/null > "${log_file}"
 } # end of function logrotate
 
-
-
 #-------------------------------------------------------------------------------
 #  Example usage
 #-------------------------------------------------------------------------------
 #
+# # check if the log is too big, and rotate it if necessary
+# logrotate
 #
-# source logging.sh
-#
-# log debug "low level message"
-# log error "important message"
-#
-# # default settings that can be changed:
-# log_level=debug
-# log_file=/var/log/something.log
-# log_timestamp='%d %b %Y %H:%M:%S %z'
+# # force a rotation of the log files (e.g. when a script starts up)
+# logrotate force
+

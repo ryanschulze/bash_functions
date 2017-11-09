@@ -2,7 +2,10 @@
 
 #===============================================================================
 #
-#   DESCRIPTION:  to be included by other shell scripts, logging functions
+#   DESCRIPTION: logging functions to be included by other shell scripts
+#
+#   log() - logs events with a customizable timestamp, severity and destination
+#   logrotate() - checks if a logfile needs to be rotated
 #
 #===============================================================================
 

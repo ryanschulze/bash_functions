@@ -23,8 +23,8 @@ _loglevels[debug]=4
 log() {
 	local this_loglevel="${1}"
 	shift
-	[[ ${_loglevels[$this_loglevel]} -le ${_loglevels[$log_level]} ]] && \
-	printf "%($log_timestamp)T - %-5s - %s\n" "-1" "${this_loglevel^^}" "${*}" >> "${log_file}"
+	[[ ${_loglevels[${this_loglevel,,}]} -le ${_loglevels[${log_level,,}]} ]] && \
+	printf "%(${log_timestamp})T - %-5s - %s\n" "-1" "${this_loglevel^^}" "${*}" >> "${log_file}"
 } # end of function log
 
 #-------------------------------------------------------------------------------

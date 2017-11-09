@@ -6,10 +6,10 @@ Various bash functions in separate files that can easily be copied into a main p
   - [log()](#log)
   - [logrotate()](#logrotate)
 - [ip2long.sh](#ip2longsh)
-  - [INET_ATON()](#INETATON)
-  - [INET_NTOA()](#INETNTOA)
-  - [INET_BROADCAST()](#INETBROADCAST)
-  - [IN_SUBNET()](#INSUBNET)
+  - [INET_ATON()](#inet_aton)
+  - [INET_NTOA()](#inet_ntoa)
+  - [INET_BROADCAST()](#inet_broadcast)
+  - [IN_SUBNET()](#in_subnet)
 
 ---
 

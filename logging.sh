@@ -75,6 +75,8 @@ logrotate() {
 #  Example usage
 #-------------------------------------------------------------------------------
 #
+# source logging.sh
+#
 # # check if the log is too big, and rotate it if necessary
 # logrotate
 #

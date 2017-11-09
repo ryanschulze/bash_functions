@@ -2,9 +2,14 @@
 Various bash functions in separate files that can easily be copied into a main project or included as external files
 
 # Table of Contents
-- [Logging.sh](#loggingsh)
-  -  [log()](#log)
+- [logging.sh](#loggingsh)
+  - [log()](#log)
   - [logrotate()](#logrotate)
+- [ip2long.sh](#ip2longsh)
+  - [INET_ATON()](#INETATON)
+  - [INET_NTOA()](#INETNTOA)
+  - [INET_BROADCAST()](#INETBROADCAST)
+  - [IN_SUBNET()](#INSUBNET)
 
 ---
 
@@ -39,3 +44,45 @@ checks if a logfile needs to be rotated
     # force a rotation of the log files (e.g. when a script starts up)
     logrotate force
 
+---
+
+## ip2long.sh
+
+### INET_ATON()
+converts a IP to a long integer
+
+**Example**
+
+    source ip2long
+    INET_NTOA 127.0.0.1
+    
+
+### INET_NTOA()
+converts IP in long integer format to a string
+
+**Example**
+
+    source ip2long
+    INET_NTOA 2130706433
+    
+
+### INET_BROADCAST()
+calculates the broadcast IP of a network
+
+**Example**
+
+    source ip2long
+    INET_BROADCAST 10.0.0.0/24
+    
+### IN_SUBNET()
+checks if an IP is in a specific subnet
+
+**Example**
+
+    source ip2long
+    IN_SUBNET 10.0.0.2 10.0.0.0/24
+    echo $?
+    
+    IN_SUBNET 10.0.1.2 10.0.0.0/24
+    echo $?
+    

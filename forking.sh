@@ -4,7 +4,7 @@
 #   includable functions to fork stuff to the background and wait for them
 #   Functions:
 #     - b "<command>" : Background
-#     - wbit_ : wait for all commands we forked off
+#     - wait_b : wait for all commands we forked off
 #     - reset_b : reset the variable tracking processes in the background
 #-------------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ reset_b
 #  Example usage
 #-------------------------------------------------------------------------------
 #
-# source functions_background_forking.sh
+# source forking.sh
 #
 # for count in $(seq 1 15)
 # do

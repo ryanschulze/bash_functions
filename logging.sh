@@ -1,85 +1,67 @@
 #!/usr/bin/env bash
-
 #===============================================================================
 #
-#   DESCRIPTION: logging functions to be included by other shell scripts
-#
-#   log() - logs events with a customizable timestamp, severity and destination
-#   logrotate() - checks if a logfile needs to be rotated
+#   DESCRIPTION:  to be included by other shell scripts, logging functions
 #
 #===============================================================================
 
-log_level=${log_level:-info}
-log_timestamp=${log_timestamp:-%e/%b %H:%M:%S}
-[[ -z ${log_file+x} || -z "${log_file}" ]] && log_file="/var/log/${0%/*}.log"
+log_max_level=${log_max_level:-info}
 
-declare -gA _loglevels=
-_loglevels[none]=0
-_loglevels[error]=1
-_loglevels[warn]=2
-_loglevels[info]=3
-_loglevels[debug]=4
-
-log() {
-	local this_loglevel="${1}"
-	shift
-	[[ ${_loglevels[${this_loglevel,,}]} -le ${_loglevels[${log_level,,}]} ]] && \
-	printf "%(${log_timestamp})T - %-5s - %s\n" "-1" "${this_loglevel^^}" "${*}" >> "${log_file}"
-} # end of function log
-
-#-------------------------------------------------------------------------------
-#  Example usage
-#-------------------------------------------------------------------------------
-#
-# source logging.sh
-#
-# log debug "low level message"
-# log error "important message"
-#
-# # default settings that can be changed:
-# log_level=debug
-# log_file=/var/log/something.log
-# log_timestamp='%d %b %Y %H:%M:%S %z'
-#
-# # to send the logs to stderr you can set log_file to /proc/self/fd/2
-#
+# set a logfile if none is defined
+if [[ -z ${logfile+x} || -z "${logfile}" ]]; then
+	logfile="/var/log/${0%/*}.log"
+fi
 
 logrotate() {
 	local action=${1:-check}
 	local logsize=
 	# Limit in Megabytes
 	local sizelimit=50
-	# assumes the global variable ${log_file} is set
+	# assumes the global variable ${logfile} is set
 
 	# if we aren't forcing a rotate, check if the main log grew too big
 	if [[ "${action}" != 'force' ]]; then
 		# check if the logfile is getting too big, rotate if neccisary
-		logsize=$(stat -c '%s' "${log_file}"); logsize=$((logsize/1024/1024))
+		logsize=$(stat -c '%s' "${logfile}"); logsize=$((logsize/1024/1024))
 		if [[ ${logsize} -lt ${sizelimit} ]]; then
 			return
 		fi
 	fi
 
 	log info "rotating logs"
-	[[ -e "${log_file}.5.gz" ]] && rm "${log_file}.5.gz"
+	[[ -e "${logfile}.5.gz" ]] && rm "${logfile}.5.gz"
 	for i in {5..3}; do
-		[[ -e "${log_file}.$((i-1)).gz" ]] && mv "${log_file}.$((i-1)).gz" "${log_file}.${i}.gz"
+		[[ -e "${logfile}.$((i-1)).gz" ]] && mv "${logfile}.$((i-1)).gz" "${logfile}.${i}.gz"
 	done
-	[[ -e "${log_file}.1" ]] && { gzip --best --quiet "${log_file}.1" && mv "${log_file}.1.gz" "${log_file}.2.gz"; }
-	[[ -e "${log_file}.1" ]] && rm "${log_file}.1"
-	[[ -e "${log_file}" ]] && cp "${log_file}" "${log_file}.1"
-	cat /dev/null > "${log_file}"
+	[[ -e "${logfile}.1" ]] && { gzip --best --quiet "${logfile}.1" && mv "${logfile}.1.gz" "${logfile}.2.gz"; }
+	[[ -e "${logfile}.1" ]] && rm "${logfile}.1"
+	[[ -e "${logfile}" ]] && cp "${logfile}" "${logfile}.1"
+	cat /dev/null > "${logfile}"
 } # end of function logrotate
+
+log() {
+	local this_loglevel="${1}"
+	shift
+	declare -A loglevels=
+	loglevels[error]=1
+	loglevels[warn]=3
+	loglevels[info]=5
+	loglevels[debug]=10
+
+	[[ ${loglevels[$this_loglevel]} -le ${loglevels[$log_max_level]} ]] && printf "%15s %-5s - %s\n" "$(date "+%e/%b %H:%M:%S")" "${this_loglevel^^}" "${*}" >> "${logfile}"
+} # end of function log
+
 
 #-------------------------------------------------------------------------------
 #  Example usage
 #-------------------------------------------------------------------------------
 #
-# source logging.sh
+# log_max_level=debug
+# logfile=/var/log/something.log
 #
-# # check if the log is too big, and rotate it if necessary
-# logrotate
+# source "${HOME}/bash_functions/logging.sh"
+# log debug "low level message"
+# log error "important message"
 #
-# # force a rotation of the log files (e.g. when a script starts up)
-# logrotate force
+
 

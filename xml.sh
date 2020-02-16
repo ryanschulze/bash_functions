@@ -3,6 +3,7 @@
 #===============================================================================
 #
 #   DESCRIPTION:  to be included by other shell scripts, rudimentary XML parsing
+#       WARNING:  bash really isn't the best tool for parsing xml
 #
 #===============================================================================
 
@@ -23,7 +24,7 @@ parse_xml () {
 	unset Attribute
 	declare -gA Attribute
 
-	# shellcheck disable=SC1101
+	# shellcheck disable=1101
 	IFS=\   
 	for attr in ${Tag#* }
 	do
@@ -56,8 +57,7 @@ trim() {
 #-------------------------------------------------------------------------------
 #  Example usage
 #-------------------------------------------------------------------------------
-#
 # while parse_xml ; do
 #  echo "-${Tag}-${Attribute[@]}-${Content}-"
 # done < ${xmlfile}
-#
+

@@ -4,9 +4,10 @@
 #   includable functions to fork stuff to the background and wait for them
 #   Functions:
 #     - b "<command>" : Background
-#     - wait_b : wait for all commands we forked off
+#     - wbit_ : wait for all commands we forked off
 #     - reset_b : reset the variable tracking processes in the background
 #-------------------------------------------------------------------------------
+
 
 #===  FUNCTION  ================================================================
 #          NAME:  b
@@ -14,6 +15,7 @@
 #    PARAMETERS:  commands fo be forked
 #===============================================================================
 b() {
+	# shellcheck disable=2048
 	${*} &
 	b_WatchPIDs="${b_WatchPIDs} $!" # add child to list of PIDs to watch
 } # end of function b
@@ -24,6 +26,7 @@ b() {
 #    PARAMETERS:  none
 #===============================================================================
 wait_b() {
+	# shellcheck disable=2086
 	wait ${b_WatchPIDs} 2>/dev/null # wait till all children are done
 	reset_b # reset the variable in case we need to use it later again
 }  # end of function wait_b
@@ -39,10 +42,8 @@ reset_b() {
 reset_b
 
 #-------------------------------------------------------------------------------
-#  Example usage
+#   example code
 #-------------------------------------------------------------------------------
-#
-# source forking.sh
 #
 # for count in $(seq 1 15)
 # do
@@ -54,5 +55,5 @@ reset_b
 # echo "waiting for all background processes to finish"
 # wait_b
 # echo "done"
-#
+#-------------------------------------------------------------------------------
 

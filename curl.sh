@@ -21,9 +21,11 @@ curl_fetch() {
 	local request=${*}
 	local response=
 
-	response=$(curl --output - --location --silent --cookie "${CurlCookies}" --cookie-jar "${CurlCookies}" -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36" -w '\n@%{http_code}@\n' "${request}")
+	# shellcheck disable=SC2086
+	response=$(curl --output - --location --silent --cookie "${CurlCookies}" --cookie-jar "${CurlCookies}" -w '\n@%{http_code}@\n' ${request})
 	response=${response//@000@/}
-	array[returncode]=$(grep -oE "^@([0-9]+)@$" <<< "${response}")
+	# shellcheck disable=SC2154
+	array[returncode]=$(grep -vE "^@000@$" <<< "${response}"| grep -oE "^@([0-9]+)@$" <<< "${response}")
 	array[returncode]=${array[returncode]//@/}
 	if [[ ${array[returncode]} -gt 0 ]]; then
 		array[response]=${response%@[0-9]*@}
@@ -41,8 +43,6 @@ curl_cleanup() {
 #-------------------------------------------------------------------------------
 #  Example usage
 #-------------------------------------------------------------------------------
-#
-# source curl.sh
 #
 # curl_fetch "http://www.ryanschulze.net/"
 #

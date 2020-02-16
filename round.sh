@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-#===  FUNCTION  ================================================================
-#          NAME:  round
-#   DESCRIPTION:  Rounds a number to percision n
-#    PARAMETERS:  <number> <percisioon>
 #===============================================================================
+#
+#   DESCRIPTION:  to be included by other shell scripts, rounding numbers
+#
+#===============================================================================
+
 round()
 {
 	local number="${1}"
@@ -17,4 +18,3 @@ round()
 #-------------------------------------------------------------------------------
 #
 # round 1.5678 2
-#

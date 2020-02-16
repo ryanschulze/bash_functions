@@ -28,14 +28,6 @@ INET_NTOA() {
     echo "${ip}"
 } # end of function INET_NTOA
 
-#-------------------------------------------------------------------------------
-#  Example usage
-#-------------------------------------------------------------------------------
-#
-# INET_NTOA 2130706433
-#
-
-
 #===  FUNCTION  ================================================================
 #          NAME:  INET_ATON
 #   DESCRIPTION:  converts a IP to a long integer
@@ -46,13 +38,6 @@ INET_ATON() {
     { IFS=. read -r a b c d; } <<< "${1}"
     echo $(((((((a << 8) | b) << 8) | c) << 8) | d))
 } # end of function INET_ATON
-
-#-------------------------------------------------------------------------------
-#  Example usage
-#-------------------------------------------------------------------------------
-#
-# INET_ATON 127.0.0.1
-#
 
 #===  FUNCTION  ================================================================
 #          NAME:  INET_BROADCAST
@@ -69,19 +54,6 @@ INET_BROADCAST()
     INET_NTOA $((network | ~netmask ))
 } # end of function INET_BROADCAST
 
-#-------------------------------------------------------------------------------
-#  Example usage
-#-------------------------------------------------------------------------------
-#
-# INET_BROADCAST 10.0.0.0/24
-#
-
-
-#===  FUNCTION  ================================================================
-#          NAME:  IN_SUBNET
-#   DESCRIPTION:  checks if an IP is in a specific subnet
-#    PARAMETERS:  ip as string, CIDR network as string
-#===============================================================================
 getCidrFromMask() {
     local mask="${1}"
     local -i bits n=32
@@ -97,6 +69,11 @@ getIntFromCidr() {
     echo ${bits}
 }
 
+#===  FUNCTION  ================================================================
+#          NAME:  IN_SUBNET
+#   DESCRIPTION:  checks if an IP is in a specific subnet
+#    PARAMETERS:  ip as string, CIDR network as string
+#===============================================================================
 IN_SUBNET() {
     local ip=${1} network=${2%%/*} mask=${2##*/} cidr
     local -i intip intmask intnet
@@ -112,13 +89,54 @@ IN_SUBNET() {
     [[ $(( intip & intmask )) -eq ${intnet} ]]
 }
 
-#-------------------------------------------------------------------------------
-#  Example usage
-#-------------------------------------------------------------------------------
-#
-# IN_SUBNET 10.0.0.2 10.0.0.0/24
-# echo $?
-#
-# IN_SUBNET 10.0.1.2 10.0.0.0/24
-# echo $?
-#
+#===  FUNCTION  ================================================================
+#          NAME:  split_subnet
+#   DESCRIPTION:  takes a large network and outputs $maxSubnet sized
+#                 smaller networks
+#    PARAMETERS:  bits and list of subnets
+#       EXAMPLE:
+#       split_subnet 26 10.1.0.0/24 10.2.0.0/27
+#       10.1.0.0/26 10.1.0.64/26 10.1.0.128/26 10.1.0.192/26 10.2.0.0/27
+#===============================================================================
+split_subnet() {
+    local maxSubnet=${1}
+    shift
+    local SubnetList="${*}"
+    local network=
+    local netmask=
+
+    for pair in ${SubnetList}
+    do
+        # split up the network and netmask
+        network=${pair%/*}
+        netmask=${pair#*/}
+        if [[ ${netmask} -ge ${maxSubnet} ]]
+        then # network is smaller than max. size. add it to the array
+            echo -n "${network}/${netmask} "
+        else # network is too big. split it up into smaller chunks and add them to the array
+            for i in $(seq 0 $(( $(( 2 ** (maxSubnet - netmask) )) - 1 )) )
+            do # convert network to long integer, add n * ${maxSubnet} and then convert back to string
+                echo -n "$( INET_NTOA $(( $( INET_ATON "${network}" ) + $(( 2 ** ( 32 - maxSubnet ) * i )) )) )/${maxSubnet} "
+            done
+        fi
+    done
+    echo
+}
+
+#===  FUNCTION  ================================================================
+#          NAME:  list_ips
+#   DESCRIPTION:  lists all IPs in a subnet
+#    PARAMETERS:  CIDR notation (i.e. 1.1.1.0/24)
+#===============================================================================
+list_ips() {
+    local ip=
+    local cidr="${1#*/}"
+    ip=$(INET_ATON "${1%/*}")
+    # -2 to discard the network and broadcast IPs, this has the side affect of also discarding /31 and /32 nets :-(
+    local range="$(( 2 ** ( 32 - cidr ) - 2 ))"
+
+    for ((i=1; i<=range; i++));
+    do
+        INET_NTOA $(( ip + i ))
+    done
+}

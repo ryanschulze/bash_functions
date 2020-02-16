@@ -24,6 +24,7 @@ notify() {
 	notify-send -i "${icon}" -t "${timeout}" "${topic}" " ${*}"
 } # end of function notify
 
+
 #-------------------------------------------------------------------------------
 #  Example usage
 #-------------------------------------------------------------------------------
@@ -33,4 +34,3 @@ notify() {
 # notify -t 10 message with a 10 second timeout
 # notify -t 10 -t test a 10 second timeout and topic test
 # notify -t 10 -i error -t test an error icon and a 10 second timeout and topic test
-#

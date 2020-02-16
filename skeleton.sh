@@ -38,6 +38,7 @@ initialize() {
 	# source "${HOME}/bash_functions/ip2long.sh"
 	# source "${HOME}/bash_functions/networking.sh"
 	# source "${HOME}/bash_functions/debugging.sh"
+	# source "${HOME}/bash_functions/logging.sh"
 
 	# clean up if script exits
 	trap cleanup TERM EXIT INT

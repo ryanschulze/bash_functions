@@ -13,39 +13,37 @@ source "${HOME}/bash_functions/colortext.sh"
 #command_status is global
 command_status=
 function try() {
-	if [ "$#" = "0" ]
-	then # not enough parameters were provided
-		echo "ERROR: sytnax is 'try <silent|warn|fatal> command'"
-		exit 1
-	fi
-	local returncode=0
-	local severity=${1}
-	shift
-	local cmd="${*}"
+  if [ "$#" = "0" ]; then # not enough parameters were provided
+    echo "ERROR: sytnax is 'try <silent|warn|fatal> command'"
+    exit 1
+  fi
+  local returncode=0
+  local severity=${1}
+  shift
+  local cmd="${*}"
 
-	$cmd
-	returncode=$?
+  $cmd
+  returncode=$?
 
-	if [[ ${returncode} -gt 0 ]]
-	then
-		case ${severity} in
-			silent )
-				command_status=${returncode}
-				;;
-			warn )
-				printf "%s: '%s' failed with return code -%s-\n" "$(text yellow "Warning")" "$(text blue "${cmd}")" "$(text yellow "${returncode}") "
-				command_status=${returncode}
-				;;
-			fatal )
-				printf "%s: '%s' failed with return code -%s-\n" "$(text red "Error")" "$(text blue "${cmd}")" "$(text yellow "${returncode}")"
-				exit ${returncode}
-				;;
-			* )
-				printf "%s: Wrong usage of the try() function\n" "$(text red "Error")"
-				exit 1
-				;;
-		esac
-	fi
+  if [[ ${returncode} -gt 0 ]]; then
+    case ${severity} in
+      silent)
+        command_status=${returncode}
+        ;;
+      warn)
+        printf "%s: '%s' failed with return code -%s-\n" "$(text yellow "Warning")" "$(text blue "${cmd}")" "$(text yellow "${returncode}") "
+        command_status=${returncode}
+        ;;
+      fatal)
+        printf "%s: '%s' failed with return code -%s-\n" "$(text red "Error")" "$(text blue "${cmd}")" "$(text yellow "${returncode}")"
+        exit ${returncode}
+        ;;
+      *)
+        printf "%s: Wrong usage of the try() function\n" "$(text red "Error")"
+        exit 1
+        ;;
+    esac
+  fi
 } # end of function try
 
 #-------------------------------------------------------------------------------
@@ -63,4 +61,3 @@ function try() {
 #	try warn  make man
 #	try warn  make doc
 #	try fatal make install
-

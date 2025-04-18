@@ -17,17 +17,15 @@ declare -ga net_data
 #     PARAMETER:  string
 #===============================================================================
 net_send() {
-	local input="${*}"
+  local input="${*}"
 
-	exec 5<> "/dev/${net_proto}/${net_ip}/${net_port}"
+  exec 5<>"/dev/${net_proto}/${net_ip}/${net_port}"
 
-	echo -e "${input}" >&5
+  echo -e "${input}" >&5
 
-	unset net_data[@]
-	while read <&5
-	do
-		net_data[${#net_data[*]}]="${REPLY}"
-	done
-	return
-}  # end of function net_send
-
+  unset net_data[@]
+  while read <&5; do
+    net_data[${#net_data[*]}]="${REPLY}"
+  done
+  return
+} # end of function net_send

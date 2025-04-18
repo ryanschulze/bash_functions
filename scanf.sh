@@ -6,18 +6,17 @@
 #    PARAMETERS:  <string> <regex with grouping> <variables ....>
 #===============================================================================
 scanf() {
-    local input=${1} regex=${2} group=1
+  local input=${1} regex=${2} group=1
 
-    [[ ${input} =~ ${regex} ]] || return 1
+  [[ ${input} =~ ${regex} ]] || return 1
 
-    shift 2
-    for varname in "${@}"
-    do
-        local -n ref=${varname}
-        # shellcheck disable=2034
-        ref=${BASH_REMATCH[group++]}
-    done
-    return 0
+  shift 2
+  for varname in "${@}"; do
+    local -n ref=${varname}
+    # shellcheck disable=2034
+    ref=${BASH_REMATCH[group++]}
+  done
+  return 0
 }
 # end of function scanf
 

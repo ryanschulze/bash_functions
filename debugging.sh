@@ -7,8 +7,8 @@ DEBUG=${DEBUG:-true}
 #   DESCRIPTION:  turns on bash debugging output
 #===============================================================================
 debug_on() {
-	$DEBUG || return
-	set -x
+  $DEBUG || return
+  set -x
 } # end of function debug_on
 
 #===  FUNCTION  ================================================================
@@ -16,8 +16,8 @@ debug_on() {
 #   DESCRIPTION:  turns off bash debugging output
 #===============================================================================
 debug_off() {
-	$DEBUG || return
-	set +x
+  $DEBUG || return
+  set +x
 } # end of function debug_off
 
 #===  FUNCTION  ================================================================
@@ -26,8 +26,8 @@ debug_off() {
 #   DESCRIPTION:  outputs parameter(s) to stderr
 #===============================================================================
 debug() {
-	$DEBUG || return
-	echo -e "[$(date '+%H:%M:%S')] ${*}" > /dev/stderr
+  $DEBUG || return
+  echo -e "[$(date '+%H:%M:%S')] ${*}" >/dev/stderr
 } # end of function debug
 
 #===  FUNCTION  ================================================================
@@ -36,8 +36,8 @@ debug() {
 #   DESCRIPTION:  outputs parameter(s) to stderr and then pauses
 #===============================================================================
 breakpoint() {
-	$DEBUG || return
-	debug "-breakpoint- ${*}"
-	echo "press any key to continue"
-	read -r
+  $DEBUG || return
+  debug "-breakpoint- ${*}"
+  echo "press any key to continue"
+  read -r
 } # end of function breakpoint

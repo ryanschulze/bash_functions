@@ -4,10 +4,9 @@
 #   includable functions to fork stuff to the background and wait for them
 #   Functions:
 #     - b "<command>" : Background
-#     - wbit_ : wait for all commands we forked off
+#     - wait_b : wait for all commands we forked off
 #     - reset_b : reset the variable tracking processes in the background
 #-------------------------------------------------------------------------------
-
 
 #===  FUNCTION  ================================================================
 #          NAME:  b
@@ -15,10 +14,10 @@
 #    PARAMETERS:  commands fo be forked
 #===============================================================================
 b() {
-	# shellcheck disable=2048
-	${*} &
-	b_WatchPIDs="${b_WatchPIDs} $!" # add child to list of PIDs to watch
-} # end of function b
+  # shellcheck disable=2048
+  ${*} &
+  b_WatchPIDs="${b_WatchPIDs} $!" # add child to list of PIDs to watch
+}                                 # end of function b
 
 #===  FUNCTION  ================================================================
 #          NAME:  wait_b
@@ -26,10 +25,10 @@ b() {
 #    PARAMETERS:  none
 #===============================================================================
 wait_b() {
-	# shellcheck disable=2086
-	wait ${b_WatchPIDs} 2>/dev/null # wait till all children are done
-	reset_b # reset the variable in case we need to use it later again
-}  # end of function wait_b
+  # shellcheck disable=2086
+  wait ${b_WatchPIDs} 2>/dev/null # wait till all children are done
+  reset_b                         # reset the variable in case we need to use it later again
+}                                 # end of function wait_b
 
 #===  FUNCTION  ================================================================
 #          NAME:  reset_b
@@ -37,8 +36,8 @@ wait_b() {
 #    PARAMETERS:  none
 #===============================================================================
 reset_b() {
-	b_WatchPIDs="" # empty variable
-}  # end of function reset_b
+  b_WatchPIDs="" # empty variable
+}                # end of function reset_b
 reset_b
 
 #-------------------------------------------------------------------------------
@@ -56,4 +55,3 @@ reset_b
 # wait_b
 # echo "done"
 #-------------------------------------------------------------------------------
-
